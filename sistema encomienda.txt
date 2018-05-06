@@ -1,0 +1,187 @@
+/**
+ * @(#)Formulario.java
+ *
+ *
+ * @author: Confix
+ * @version 1.00 2018/5/5
+ */
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+
+class Formulario extends JFrame implements ActionListener{
+    
+    private JLabel lb_titulo,lb_ciudad, lb_peso, lb_kg, lb_tipo_servicio, lb_lugar_entrega;
+    private JComboBox cb_ciudad;
+    private JTextField txt_peso;
+    private JCheckBox chb_fragil;
+    private JRadioButton rbtn_normal, rbtn_oficina, rbtn_express, rbtn_domicilio;
+    private ButtonGroup btng_tipo_servicio, btng_lugar_entrega;
+    private JTextArea txta_resultado;
+    private JButton btn_registrar, btn_limpiar, btn_salir;
+    
+    public Formulario(){
+        
+        setLayout(null);
+        
+        lb_titulo=new JLabel("Sistema de Encomiendas");
+        lb_titulo.setBounds(130,10,150,30);
+        add(lb_titulo);
+        
+        lb_ciudad=new JLabel("Ciudad Destino");
+        lb_ciudad.setBounds(10,50,170,30);
+        add(lb_ciudad);
+        cb_ciudad=new JComboBox();
+        cb_ciudad.setBounds(120,50,170,30);
+        String[] ciudad = {"(Seleccione)", "Valparaíso", "Concepción", "La Serena"};
+        for(int i=0;i<=3;i++) {
+            cb_ciudad.addItem(String.valueOf(ciudad[i]));
+        }
+        add(cb_ciudad);
+          
+        lb_peso=new JLabel("Peso");
+        lb_peso.setBounds(10,100,170,30);
+        add(lb_peso);
+        txt_peso = new JTextField();
+        txt_peso.setBounds(120,100,150,30);
+        add(txt_peso);
+        lb_kg=new JLabel("Kg.");
+        lb_kg.setBounds(280,100,170,30);
+        add(lb_kg);
+        
+        
+        lb_tipo_servicio =new JLabel("Tipo Servicio");
+        lb_tipo_servicio.setBounds(10,150,100,30);
+        add(lb_tipo_servicio);
+        
+        btng_tipo_servicio=new ButtonGroup();
+        
+        rbtn_normal=new JRadioButton("Normal");
+        rbtn_normal.setBounds(10,180,100,30);
+        add(rbtn_normal);
+        btng_tipo_servicio.add(rbtn_normal);
+        	
+       	rbtn_express=new JRadioButton("Express");
+        rbtn_express.setBounds(10,210,100,30);
+        add(rbtn_express);
+        btng_tipo_servicio.add(rbtn_express);
+        
+        lb_lugar_entrega=new JLabel("Lugar de Entrega");
+        lb_lugar_entrega.setBounds(160,150,100,30);
+        add(lb_lugar_entrega);
+        
+        btng_lugar_entrega=new ButtonGroup();
+        
+        rbtn_oficina=new JRadioButton("Oficina");
+        rbtn_oficina.setBounds(160,180,100,30);
+        add(rbtn_oficina);
+        btng_lugar_entrega.add(rbtn_oficina);
+        	
+       	rbtn_domicilio=new JRadioButton("Domicilio");
+        rbtn_domicilio.setBounds(160,210,100,30);
+        add(rbtn_domicilio);
+        btng_lugar_entrega.add(rbtn_domicilio);
+        
+        
+        chb_fragil=new JCheckBox("Fragil");
+        chb_fragil.setBounds(280,180,100,30);
+        add(chb_fragil);
+        
+        txta_resultado=new JTextArea();
+        txta_resultado.setBounds(10,240,240,110);
+        add(txta_resultado);
+        
+        
+        btn_registrar=new JButton("Registrar");
+        btn_registrar.setBounds(300,240,100,30);
+        add(btn_registrar);
+        btn_registrar.addActionListener(this);
+        
+        btn_limpiar=new JButton("Limpiar");
+        btn_limpiar.setBounds(300,280,100,30);
+        add(btn_limpiar);
+        btn_limpiar.addActionListener(this);
+        
+        btn_salir=new JButton("Salir");
+        btn_salir.setBounds(300,320,100,30);
+        add(btn_salir);
+        btn_salir.addActionListener(this);
+    }
+
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource()==btn_registrar) {
+        	
+        	String ciudad, tipo_servicio, lugar_entrega, mensaje;
+        	double valor_x_kg=0, valor_adicional=0, peso=0, costo=0;
+        	int total, m=0;
+        	
+        	peso = Double.parseDouble(txt_peso.getText());
+        	
+            ciudad = cb_ciudad.getSelectedItem().toString();
+            
+            if(rbtn_express.isSelected()){
+            	valor_adicional += 3000;
+            	tipo_servicio = "Express";
+            }else{
+            	tipo_servicio = "Normal";
+            }
+            
+            if(rbtn_domicilio.isSelected()){
+            	valor_adicional += 1500;
+            	lugar_entrega = "Domicilio";
+            }else{
+            	lugar_entrega = "Oficina";
+            }
+            
+            switch(ciudad) {
+            	case "Valparaíso":
+            		valor_x_kg = 1500;
+            		break;
+            	case "Concepción":
+            		valor_x_kg = 2100;
+            		break;
+            	case "La Serena":
+            		valor_x_kg = 2000;
+            		break;
+            	default:
+            		JOptionPane.showMessageDialog(null, "Por Favor Selecione una ciudad");
+            		m = 1;
+            	}
+            	
+           costo = (valor_x_kg * peso) + valor_adicional;
+           
+           if(chb_fragil.isSelected()){
+            	costo = costo * 1.1;
+            }
+            
+            total = (int)costo;
+            
+           mensaje = "Ciudad: " + ciudad +
+           			"\nPeso: " + peso + "Kg" +
+           			"\nTipo de servicio: " + tipo_servicio +
+           			"\nLugar de entrega: " + lugar_entrega +
+           			"\nCosto Total: " + total;
+           			
+           txta_resultado.setText(mensaje);
+            
+        }else if (e.getSource()== btn_limpiar) {
+        		cb_ciudad.setSelectedIndex(0);
+                txt_peso.setText("");
+                txta_resultado.setText("");
+                btng_lugar_entrega.clearSelection();
+                btng_tipo_servicio.clearSelection();
+                chb_fragil.setSelected(false);
+        }else if (e.getSource()== btn_salir) {
+        	this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+        }
+    }
+    
+    public static void main(String[] ar) {
+        Formulario formulario1=new Formulario();
+        formulario1.setBounds(0,0,430,420);
+        formulario1.setVisible(true);
+    }
+}
+
+
